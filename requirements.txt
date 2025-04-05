@@ -1,0 +1,6 @@
+Flask
+requests
+whisper
+torch
+openai-whisper
+reportlab
