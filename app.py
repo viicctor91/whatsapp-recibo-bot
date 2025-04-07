@@ -6,7 +6,7 @@ import os
 
 app = Flask(__name__)
 
-VERIFY_TOKEN = "seu_token_de_verificacao"  # Defina esse token para o webhook do Meta
+VERIFY_TOKEN = "seutokenseguro123"  # Use esse mesmo token no painel da Meta
 
 @app.route("/webhook", methods=["GET", "POST"])
 def webhook():
@@ -42,15 +42,15 @@ def webhook():
                     with open("audio.ogg", "wb") as f:
                         f.write(audio_response.content)
 
-                    # Transcrever com Whisper local (ou você pode usar a API)
+                    # Transcrever com Whisper
                     import whisper
                     model = whisper.load_model("base")
                     result = model.transcribe("audio.ogg")
                     texto = result["text"]
 
-                    # Interpretar comando de recibo
+                    # Extrair dados do texto
                     import re
-                    valor = re.search(r"(\d{1,3}(\.\d{3})*,\d{2}|\d+)", texto).group()
+                    valor = re.search(r"(\\d{1,3}(\\.\\d{3})*,\\d{2}|\\d+)", texto).group()
                     nome = re.search(r"para (.*?) cpf", texto, re.IGNORECASE).group(1).strip()
                     servico = re.search(r"servi[cç]o (.*)", texto, re.IGNORECASE).group(1).strip()
 
@@ -65,5 +65,8 @@ def webhook():
 
         return "ok", 200
 
+# CORREÇÃO PARA FUNCIONAR NO RENDER:
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
+
